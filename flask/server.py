@@ -23,16 +23,28 @@ def checkpoint():
 
     #get data from request
     resp = request.get_json()
+    
     # Validate data
     try:
         cpr = CheckpointPostRequest(**resp)
     except ValidationError as e:
         return("Could not validate payload. Ensure it is formatted correctly")
     
+    #Setup database connection
+    try:
+        client = MongoClient("mongodb://0.0.0.0:27017/")
+        db = client.BlitzOps
+        checkpoints = db.checkpoints
+    except Exception as e:
+        return("Could not connect to database")
 
     # Insert into database
-    db = client.checkpoints
-    return resp
+    try:
+        db_resp = checkpoints.insert_one(cpr.model_dump())
+    except Exception as e:
+        return("Could not insert into database")
+    
+    return db_resp.inserted_id
 
 
 if __name__ == "__main__":
