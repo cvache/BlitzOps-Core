@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 import os
 
-from flask import Flask
+from flask import Flask, request
+from models import CheckpointPostRequest
+from pydantic import ValidationError
 from pymongo import MongoClient
 
 app = Flask(__name__)
@@ -14,7 +16,23 @@ def v1():
         client.admin.command('ismaster')
     except:
         return "Server not available"
-    return "Hello from the MongoDB client!\n"
+    return "Hello from the MongoDB client!----\n"
+
+@app.route('/checkpoint', methods=['POST'])
+def checkpoint():
+
+    #get data from request
+    resp = request.get_json()
+    # Validate data
+    try:
+        cpr = CheckpointPostRequest(**resp)
+    except ValidationError as e:
+        return("Could not validate payload. Ensure it is formatted correctly")
+    
+
+    # Insert into database
+    db = client.checkpoints
+    return resp
 
 
 if __name__ == "__main__":
