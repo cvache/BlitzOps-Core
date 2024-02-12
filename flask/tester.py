@@ -1,31 +1,29 @@
-#!/usr/bin/env python
-import os
-
-from flask import Flask, request
 from models import CheckpointPostRequest
-from pydantic import ValidationError
+from pydantic_core import ValidationError
+import uuid
+
 from pymongo import MongoClient
 
-app = Flask(__name__)
+payload = {
+        "workflow_id": "wf1",
+        "run_id": str(uuid.uuid4()),
+        "checkpoint_id": "123",
+        "timestamp": 123.123
+}
 
-client = MongoClient("mongo:27017")
+def validate():
 
-@app.route('/')
-def v1():
-    print("TEST@")
     try:
-        client.admin.command('ismaster')
-    except:
-        return "Server not available"
-    return "Hello from the MongoDB client!----\n"
+        cpr = CheckpointPostRequest(**payload)
+    except ValidationError as e:
+        print(e)
+        print("BEEP")
+    
+    print(cpr.workflow_id)
 
-@app.route('/checkpoint', methods=['POST'])
-def checkpoint():
 
-    #get data from request
-    resp = request.get_json()
-
-    print("TEST")
+def db():
+    resp = payload
     
     # Validate data
     try:
@@ -48,8 +46,7 @@ def checkpoint():
         return(str(e))
     
     return db_resp.inserted_id
-
+ 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=os.environ.get("FLASK_SERVER_PORT", 9090), debug=True)
-    
+    db()
