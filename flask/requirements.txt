@@ -1,3 +1,0 @@
-pymongo
-flask
-pydantic==2.6.1

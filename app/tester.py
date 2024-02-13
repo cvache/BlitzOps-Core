@@ -1,8 +1,14 @@
-from models import CheckpointPostRequest
 from pydantic_core import ValidationError
+from pydantic import BaseModel
 import uuid
 
 from pymongo import MongoClient
+
+class CheckpointPostRequest(BaseModel):
+    workflow_id: str
+    run_id: str
+    checkpoint_id: str
+    timestamp: float
 
 payload = {
         "workflow_id": "wf1",
