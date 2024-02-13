@@ -19,16 +19,17 @@ def hello_world():
 async def add_checkpint(checkpoint: CheckpointPostRequest):
     #Setup database connection
     try:
-        client = motor.motor_tornado.MotorClient("mongodb://localhost:27017/")
+        client = motor.motor_tornado.MotorClient("mongodb://mongo:27017/")
         db = client.BlitzOps
-        checkpoints = db.checkpoints
     except Exception as e:
         return("Could not connect to database")
 
     # Insert into database
     try:
+        print(checkpoint.model_dump())
         db_resp = await db.checkpoints.insert_one(checkpoint.model_dump())
     except Exception as e:
+        print("Error inserting into database")
         return(str(e))
     
-    return db_resp.inserted_id
+    return str(db_resp.inserted_id)
