@@ -1,0 +1,6 @@
+pymongo
+fastapi
+uvicorn
+pydantic==2.6.1
+tornado==6.4
+motor==3.3.2
