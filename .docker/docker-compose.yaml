@@ -3,7 +3,7 @@ services:
     build:
       context: .
       target: dev-envs
-    container_name: fastapi-application
+    container_name: fastapi
     environment:
       PORT: 8000
     ports:
@@ -16,4 +16,3 @@ services:
 
   mongo:
     image: mongo
-    
