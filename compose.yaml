@@ -8,9 +8,9 @@ services:
       - 80:80
     restart: "no"
     depends_on:
-      -  mongo  
+      - mongo
 
   mongo:
     image: mongo
-    ports: 
+    ports:
       - 27017:27017
